@@ -10,6 +10,9 @@ struct proc;
 struct spinlock;
 struct stat;
 
+//ADDED 
+struct ProcessInfo;
+
 // bio.c
 void            binit(void);
 struct buf*     bread(uint, uint);
@@ -132,6 +135,7 @@ int             strncmp(const char*, const char*, uint);
 char*           strncpy(char*, const char*, int);
 
 // syscall.c
+int             getprocs(struct ProcessInfo*);
 int             argint(int, int*);
 int             argptr(int, char**, int);
 int             argstr(int, char**);
