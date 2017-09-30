@@ -6,11 +6,6 @@
 #include "proc.h"
 #include "sysfunc.h"
 
-
-int
-getprocs(struct ProcessInfo processInfoTable[]);
-
-
 int
 sys_fork(void)
 {

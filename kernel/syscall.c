@@ -13,6 +13,9 @@
 // library system call function. The saved user %esp points
 // to a saved program counter, and then the first argument.
 
+int
+getprocs(struct ProcessInfo processInfoTable[]);
+
 // Fetch the int at addr from process p.
 int
 fetchint(struct proc *p, uint addr, int *ip)
