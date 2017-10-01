@@ -6,26 +6,12 @@
 #include "x86.h"
 #include "syscall.h"
 #include "sysfunc.h"
-#include "ProcessInfo.h"
 
 // User code makes a system call with INT T_SYSCALL.
 // System call number in %eax.
 // Arguments on the stack, from the user call to the C
 // library system call function. The saved user %esp points
 // to a saved program counter, and then the first argument.
-
-int
-getprocs(struct ProcessInfo processInfoTable[])
-{
-  int len = sizeof processInfoTable / sizeof processInfoTable[0];
-  int numProcs = 0;
-  int i;
-  for (i = 0; i < len; i++){
-    if (processInfoTable[i].state != UNUSED)
-      numProcs++;
-  }
-  return numProcs;
-};
 
 // Fetch the int at addr from process p.
 int
@@ -117,6 +103,7 @@ static int (*syscalls[])(void) = {
 [SYS_wait]    sys_wait,
 [SYS_write]   sys_write,
 [SYS_uptime]  sys_uptime,
+[SYS_getprocs]  sys_getprocs
 };
 
 // Called on a syscall trap. Checks that the syscall number (passed via eax)

@@ -112,6 +112,7 @@ void            userinit(void);
 int             wait(void);
 void            wakeup(void*);
 void            yield(void);
+int             getprocs(void);
 
 // swtch.S
 void            swtch(struct context**, struct context*);
@@ -135,7 +136,6 @@ int             strncmp(const char*, const char*, uint);
 char*           strncpy(char*, const char*, int);
 
 // syscall.c
-int             getprocs(struct ProcessInfo*);
 int             argint(int, int*);
 int             argptr(int, char**, int);
 int             argstr(int, char**);
