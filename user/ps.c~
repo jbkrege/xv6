@@ -1,0 +1,12 @@
+#include "types.h"
+#include "stat.h"
+#include "user.h"
+
+int 
+main(int argc, char **argv)
+{
+  int mmm = 5;
+  printf("%d", mmm);
+  exit();
+}
+
