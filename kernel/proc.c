@@ -126,8 +126,28 @@ growproc(int n)
 int
 getprocs(void)
 {
-  return 65;
+  static char *states[] = {
+    [UNUSED]    "UNUSED",
+    [EMBRYO]    "EMBRYO",
+    [SLEEPING]  "SLEEPING",
+    [RUNNABLE]  "RUNNABLE",
+    [RUNNING]   "RUNNING",
+    [ZOMBIE]    "ZOMBIE"
+  };
+  struct proc *p;
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->pid != 0){
+      int ppid;
+      if(p->parent->pid < NPROC)
+	ppid = p->parent->pid;
+      else
+	ppid = -1;
+      cprintf("%d %d %s %d %s \n", p->pid, ppid, states[p->state], p->sz, p->name);
+    }
+  }
+  return 0;
 }
+
 
 // Create a new process copying p as the parent.
 // Sets up stack to return as if from system call.
