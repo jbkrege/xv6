@@ -10,12 +10,14 @@ USER_PROGS := \
 	ln\
 	ls\
 	mkdir\
+	ntst\
 	ps\
 	rm\
 	sh\
 	stressfs\
 	tester\
 	usertests\
+	usertests_2_1\
 	wc\
 	zombie
 
@@ -74,7 +76,7 @@ USER_LDFLAGS += --omagic
 USER_LDFLAGS += --entry=main
 
 # location in memory where the program will be loaded
-USER_LDFLAGS += --section-start=.text=0x0
+USER_LDFLAGS += --section-start=.text=0x1000
 
 user/bin:
 	mkdir -p user/bin

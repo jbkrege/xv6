@@ -1,0 +1,24 @@
+
+#include "types.h"
+#include "stat.h"
+#include "user.h"
+
+int
+main(int argc, char **argv)
+{
+  getprocs();
+  exit();
+  return 0;
+}
+#include "types.h"
+#include "stat.h"
+#include "user.h"
+
+int 
+main(int argc, char **argv)
+{
+  getprocs();
+  exit();
+  return 0;
+}
+

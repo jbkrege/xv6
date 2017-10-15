@@ -306,7 +306,7 @@ copyuvm(pde_t *pgdir, uint sz)
 
   if((d = setupkvm()) == 0)
     return 0;
-  for(i = 0; i < sz; i += PGSIZE){
+  for(i = PGSIZE; i < sz; i += PGSIZE){
     if((pte = walkpgdir(pgdir, (void*)i, 0)) == 0)
       panic("copyuvm: pte should exist");
     if(!(*pte & PTE_P))
@@ -314,6 +314,7 @@ copyuvm(pde_t *pgdir, uint sz)
     pa = PTE_ADDR(*pte);
     if((mem = kalloc()) == 0)
       goto bad;
+    //cprintf("%p \n", mem);
     memmove(mem, (char*)pa, PGSIZE);
     if(mappages(d, (void*)i, PGSIZE, PADDR(mem), PTE_W|PTE_U) < 0)
       goto bad;

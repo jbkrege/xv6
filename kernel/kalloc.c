@@ -65,6 +65,14 @@ kalloc(void)
   r = kmem.freelist;
   if(r)
     kmem.freelist = r->next;
+  //Ben add
+
+  if((uint)kmem.freelist == 0){
+    r = kmem.freelist;
+    if(r)
+      kmem.freelist = r->next;
+  }
+
   release(&kmem.lock);
   return (char*)r;
 }
