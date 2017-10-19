@@ -13,6 +13,12 @@ sys_getprocs(void)
 }
 
 int
+sys_shmem_access(void)
+{
+  return (int)shmem_access(0);
+}
+
+int
 sys_fork(void)
 {
   return fork();

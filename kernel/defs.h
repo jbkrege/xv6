@@ -113,6 +113,7 @@ int             wait(void);
 void            wakeup(void*);
 void            yield(void);
 int             getprocs(void);
+void*           shmem_access(int);
 
 // swtch.S
 void            swtch(struct context**, struct context*);

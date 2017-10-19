@@ -18,6 +18,7 @@ USER_PROGS := \
 	tester\
 	usertests\
 	usertests_2_1\
+	usertests_2_2\
 	wc\
 	zombie
 

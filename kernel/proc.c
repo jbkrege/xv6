@@ -126,6 +126,7 @@ growproc(int n)
 int
 getprocs(void)
 {
+  
   static char *states[] = {
     [UNUSED]    "UNUSED",
     [EMBRYO]    "EMBRYO",
@@ -138,14 +139,20 @@ getprocs(void)
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->pid != 0){
       int ppid;
-      if(p->parent->pid < NPROC)
+      if(p -> parent != ((void*) 0) && p->parent->pid < NPROC)
 	ppid = p->parent->pid;
       else
 	ppid = -1;
       cprintf("%d %d %s %d %s \n", p->pid, ppid, states[p->state], p->sz, p->name);
     }
   }
+  
   return 0;
+}
+
+void*
+shmem_access(int page_number){
+  return (void*) 0;
 }
 
 
