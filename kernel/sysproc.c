@@ -15,7 +15,19 @@ sys_getprocs(void)
 int
 sys_shmem_access(void)
 {
-  return (int)shmem_access(0);
+  int n;
+  if(argint(0, &n) < 0)
+    return -1;
+  return (int)shmem_access(n);
+}
+
+int
+sys_shmem_count(void)
+{
+  int n;
+  if(argint(0, &n) < 0)
+    return -1;
+  return (int)shmem_count(n);
 }
 
 int

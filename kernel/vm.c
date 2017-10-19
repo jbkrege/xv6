@@ -10,6 +10,10 @@ extern char data[];  // defined in data.S
 
 static pde_t *kpgdir;  // for use in scheduler()
 
+int shmem_c[4];
+void *shmem_add[4];
+
+
 // Allocate one page table for the machine for the kernel address
 // space for scheduler processes.
 void
@@ -95,6 +99,65 @@ mappages(pde_t *pgdir, void *la, uint size, uint pa, int perm)
   }
   return 0;
 }
+
+
+void
+shmem_init(){
+  int i;
+  for(i = 0; i < 4; i++){
+    shmem_c[i] = 0;
+    shmem_add[i] = NULL;
+  }
+}
+
+void*
+shmem_access(int page_number){
+  if(page_number < 0 || page_number >= 4)
+    return NULL;
+  if(proc->sh[page_number] != NULL)
+    return proc->sh[page_number];
+  int count = 1;
+  int i;
+  for(i = 0; i < 4; i++){
+    if(proc->sh[i] != NULL)
+      count++;
+  }
+  void *addr = (void*)(USERTOP - count*PGSIZE);
+  if(proc->sz >= (int)addr)
+    return NULL;
+  shmem_add[page_number] = kalloc();
+  if(shmem_add[page_number] == 0){
+    shmem_add[page_number] = NULL;
+    return NULL;
+  }
+  mappages(proc->pgdir, addr, PGSIZE, PADDR(shmem_add[page_number]), PTE_W|PTE_U);
+  shmem_c[page_number] = shmem_c[page_number] + 1;
+  proc->sh[page_number] = addr;
+
+  return addr;
+}
+
+int
+shmem_count(int page_number){
+  if(page_number < 0 || page_number >= 4)
+    return NULL;
+  return shmem_c[page_number];
+}
+
+void
+free_shmem(struct proc *p){
+  int i;
+  for(i = 0; i < 4; i++){
+    if(p->sh[i] != NULL){
+      p->sh[i] = NULL;
+      shmem_c[i]--;
+      if(shmem_c[i] == 0 && shmem_add[i] != NULL){
+	kfree((char *)shmem_add[i]);
+      }
+    }
+  }
+}
+
 
 // The mappings from logical to linear are one to one (i.e.,
 // segmentation doesn't do anything).

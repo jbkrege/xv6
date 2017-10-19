@@ -150,11 +150,6 @@ getprocs(void)
   return 0;
 }
 
-void*
-shmem_access(int page_number){
-  return (void*) 0;
-}
-
 
 // Create a new process copying p as the parent.
 // Sets up stack to return as if from system call.
@@ -205,7 +200,7 @@ exit(void)
 
   if(proc == initproc)
     panic("init exiting");
-
+  
   // Close all open files.
   for(fd = 0; fd < NOFILE; fd++){
     if(proc->ofile[fd]){
@@ -231,10 +226,14 @@ exit(void)
     }
   }
 
+  
+  
   // Jump into the scheduler, never to return.
   proc->state = ZOMBIE;
   sched();
   panic("zombie exit");
+
+  free_shmem(proc);
 }
 
 
