@@ -69,7 +69,10 @@ found:
   p->context = (struct context*)sp;
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
-
+  int i;
+  for(i = 0; i < 4; i++){
+    p->sh[i] = NULL;
+  }
   return p;
 }
 
@@ -186,6 +189,14 @@ fork(void)
   pid = np->pid;
   np->state = RUNNABLE;
   safestrcpy(np->name, proc->name, sizeof(proc->name));
+  int ii;
+  extern int shmem_c[4];
+  for(ii = 0; ii < 4; ii++){
+    if(proc->sh[ii] != NULL){
+      np->sh[ii] = proc->sh[ii];
+      shmem_c[ii]++;
+    }
+  }
   return pid;
 }
 
@@ -226,14 +237,12 @@ exit(void)
     }
   }
 
-  
+  free_shmem(proc);
   
   // Jump into the scheduler, never to return.
   proc->state = ZOMBIE;
   sched();
   panic("zombie exit");
-
-  free_shmem(proc);
 }
 
 

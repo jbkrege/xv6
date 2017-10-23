@@ -110,21 +110,25 @@ shmem_init(){
   }
 }
 
+
 void*
 shmem_access(int page_number){
-  if(page_number < 0 || page_number >= 4)
-    return NULL;
-  if(proc->sh[page_number] != NULL)
-    return proc->sh[page_number];
-  int count = 1;
+  int count = 0;
   int i;
   for(i = 0; i < 4; i++){
     if(proc->sh[i] != NULL)
       count++;
   }
-  void *addr = (void*)(USERTOP - count*PGSIZE);
-  if(proc->sz >= (int)addr)
+  if(page_number < 0 || page_number >= 4)
     return NULL;
+  if(proc->sh[page_number] != NULL){
+    int t = mappages(proc->pgdir, proc->sh[page_number], PGSIZE, PADDR(shmem_add[page_number]), PTE_W|PTE_U);
+    if (t < 0)
+      return NULL;
+    return proc->sh[page_number];
+  }
+  count++;
+  void *addr = (void*)(USERTOP - count*PGSIZE);
   shmem_add[page_number] = kalloc();
   if(shmem_add[page_number] == 0){
     shmem_add[page_number] = NULL;
@@ -137,10 +141,11 @@ shmem_access(int page_number){
   return addr;
 }
 
+
 int
 shmem_count(int page_number){
   if(page_number < 0 || page_number >= 4)
-    return NULL;
+    return -1;
   return shmem_c[page_number];
 }
 
@@ -149,12 +154,12 @@ free_shmem(struct proc *p){
   int i;
   for(i = 0; i < 4; i++){
     if(p->sh[i] != NULL){
-      p->sh[i] = NULL;
       shmem_c[i]--;
       if(shmem_c[i] == 0 && shmem_add[i] != NULL){
 	kfree((char *)shmem_add[i]);
       }
     }
+    p->sh[i] = NULL;
   }
 }
 
@@ -348,7 +353,7 @@ freevm(pde_t *pgdir)
 
   if(pgdir == 0)
     panic("freevm: no pgdir");
-  deallocuvm(pgdir, USERTOP, 0);
+  deallocuvm(pgdir, USERTOP - 4*PGSIZE, 0);
   for(i = 0; i < NPDENTRIES; i++){
     if(pgdir[i] & PTE_P)
       kfree((char*)PTE_ADDR(pgdir[i]));

@@ -16,6 +16,7 @@ USER_PROGS := \
 	sh\
 	sharedmem_simpletests\
 	stressfs\
+	ta_tests_2_ec\
 	tester\
 	usertests\
 	usertests_2_1\
